@@ -6,3 +6,4 @@ Cambio realizado directamente en main
 Cambio realizado en feature-linux
 feature-linux
 Cambio independiente en main
+Este cambio se ha realizado directamente desde GitHub.
