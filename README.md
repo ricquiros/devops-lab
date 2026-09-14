@@ -5,3 +5,4 @@ Practicando ramas de Git
 Cambio realizado directamente en main
 Cambio realizado en feature-linux
 feature-linux
+Cambio independiente en main
