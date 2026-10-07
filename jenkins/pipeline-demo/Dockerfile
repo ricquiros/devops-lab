@@ -1,3 +1,3 @@
 FROM nginx:latest
 
-COPY index.html /usr/share/nginx/html/index.html
+COPY archivo-que-no-existe.html /usr/share/nginx/html/index.html
