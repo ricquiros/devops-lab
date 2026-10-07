@@ -4,13 +4,15 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                echo 'Checking source code'
+                echo 'Source code checked out by Jenkins'
             }
         }
 
         stage('Build Docker Image') {
             steps {
-                sh 'docker build -t devops-demo:latest .'
+                dir('jenkins/pipeline-demo') {
+                    sh 'docker build -t devops-demo:latest .'
+                }
             }
         }
 
