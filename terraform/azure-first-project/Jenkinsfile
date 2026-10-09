@@ -1,0 +1,39 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Terraform Format') {
+            steps {
+                dir('terraform/azure-first-project') {
+                    sh 'terraform fmt -check -recursive'
+                }
+            }
+        }
+
+        stage('Terraform Init') {
+            steps {
+                dir('terraform/azure-first-project') {
+                    sh 'terraform init -backend=false -input=false'
+                }
+            }
+        }
+
+        stage('Terraform Validate') {
+            steps {
+                dir('terraform/azure-first-project') {
+                    sh 'terraform validate'
+                }
+            }
+        }
+    }
+
+    post {
+        success {
+            echo 'Terraform validation completed successfully.'
+        }
+
+        failure {
+            echo 'Terraform validation failed. Check the stage output.'
+        }
+    }
+}
