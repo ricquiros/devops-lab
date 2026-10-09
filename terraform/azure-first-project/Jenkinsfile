@@ -41,6 +41,19 @@ pipeline {
                 }
             }
         }
+
+        stage('Manual Approval') {
+            steps {
+                timeout(time: 10, unit: 'MINUTES') {
+                    input(
+                        message: 'Revisa el resultado de Terraform Plan. Este laboratorio NO ejecutará terraform apply. ¿Confirmas la revisión?',
+                        ok: 'Confirmar revisión'
+                    )
+                }
+
+                echo 'Revisión aprobada. No se ha ejecutado terraform apply.'
+            }
+        }
     }
 
     post {
