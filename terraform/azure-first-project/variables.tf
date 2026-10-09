@@ -15,3 +15,8 @@ variable "vnet_location" {
   type        = string
   default     = "North Europe"
 }
+
+variable "ssh_public_key" {
+  description = "SSH public key for the Azure Linux VM"
+  type        = string
+}
