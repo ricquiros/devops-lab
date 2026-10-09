@@ -21,7 +21,23 @@ pipeline {
         stage('Terraform Validate') {
             steps {
                 dir('terraform/azure-first-project') {
-                    sh 'terraform validate'
+                    sh 'terraform validate -no-color'
+                }
+            }
+        }
+
+        stage('Terraform Plan') {
+            steps {
+                withCredentials([
+                    string(credentialsId: 'azure-client-id', variable: 'ARM_CLIENT_ID'),
+                    string(credentialsId: 'azure-client-secret', variable: 'ARM_CLIENT_SECRET'),
+                    string(credentialsId: 'azure-subscription-id', variable: 'ARM_SUBSCRIPTION_ID'),
+                    string(credentialsId: 'azure-tenant-id', variable: 'ARM_TENANT_ID'),
+                    string(credentialsId: 'terraform-ssh-public-key', variable: 'TF_VAR_ssh_public_key')
+                ]) {
+                    dir('terraform/azure-first-project') {
+                        sh 'terraform plan -input=false -no-color'
+                    }
                 }
             }
         }
@@ -29,11 +45,11 @@ pipeline {
 
     post {
         success {
-            echo 'Terraform validation completed successfully.'
+            echo 'Terraform pipeline completed successfully.'
         }
 
         failure {
-            echo 'Terraform validation failed. Check the stage output.'
+            echo 'Terraform pipeline failed. Check the stage output.'
         }
     }
 }
