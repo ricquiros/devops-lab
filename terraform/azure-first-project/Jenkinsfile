@@ -12,8 +12,17 @@ pipeline {
 
         stage('Terraform Init') {
             steps {
-                dir('terraform/azure-first-project') {
-                    sh 'terraform init -backend=false -input=false'
+                withCredentials([
+                    string(credentialsId: 'azure-client-id', variable: 'ARM_CLIENT_ID'),
+                    string(credentialsId: 'azure-client-secret', variable: 'ARM_CLIENT_SECRET'),
+                    string(credentialsId: 'azure-subscription-id', variable: 'ARM_SUBSCRIPTION_ID'),
+                    string(credentialsId: 'azure-tenant-id', variable: 'ARM_TENANT_ID')
+                ]) {
+                    withEnv(['ARM_USE_AZUREAD=true']) {
+                        dir('terraform/azure-first-project') {
+                            sh 'terraform init -reconfigure -input=false -no-color'
+                        }
+                    }
                 }
             }
         }
@@ -35,8 +44,10 @@ pipeline {
                     string(credentialsId: 'azure-tenant-id', variable: 'ARM_TENANT_ID'),
                     string(credentialsId: 'terraform-ssh-public-key', variable: 'TF_VAR_ssh_public_key')
                 ]) {
-                    dir('terraform/azure-first-project') {
-                        sh 'terraform plan -input=false -no-color'
+                    withEnv(['ARM_USE_AZUREAD=true']) {
+                        dir('terraform/azure-first-project') {
+                            sh 'terraform plan -input=false -no-color'
+                        }
                     }
                 }
             }
