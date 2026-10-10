@@ -27,6 +27,26 @@ pipeline {
             }
         }
 
+        stage('Terraform State Check') {
+            steps {
+                withCredentials([
+                    string(credentialsId: 'azure-client-id', variable: 'ARM_CLIENT_ID'),
+                    string(credentialsId: 'azure-client-secret', variable: 'ARM_CLIENT_SECRET'),
+                    string(credentialsId: 'azure-subscription-id', variable: 'ARM_SUBSCRIPTION_ID'),
+                    string(credentialsId: 'azure-tenant-id', variable: 'ARM_TENANT_ID')
+                ]) {
+                    withEnv(['ARM_USE_AZUREAD=true']) {
+                        dir('terraform/azure-first-project') {
+                            sh '''
+                                echo "Resources tracked in remote state:"
+                                terraform state list
+                            '''
+                        }
+                    }
+                }
+            }
+        }
+
         stage('Terraform Validate') {
             steps {
                 dir('terraform/azure-first-project') {
